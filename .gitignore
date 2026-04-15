@@ -1,0 +1,13 @@
+.venv
+__pycache__
+.idea
+file_tree.py
+tree.txt
+.vscode
+posts.db
+*.db
+/posts.db-shm
+/posts.db-wal
+/.env
+/uploads
+file:*
