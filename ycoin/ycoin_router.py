@@ -62,8 +62,8 @@ def _describe_tx(tx: YCoinTransaction) -> str:
 
 @router.get("/transactions", response_model=TxListResponse)
 def get_transactions(
-        event_type: Optional[str] = Query(None, regex="^(post|comment|witness|amen)$"),
-        page: int = Query(1, ge=1),
+    event_type: Optional[str] = Query(None, pattern="^(post|comment|witness|amen)$"), # <-- Đổi regex thành pattern
+    page: int = Query(1, ge=1),
         limit: int = Query(20, ge=1, le=100),
         db: Session = Depends(get_db),
         current_user_id: str = Depends(get_current_userid),
