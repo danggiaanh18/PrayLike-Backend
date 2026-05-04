@@ -113,7 +113,12 @@ def verify_and_rotate_refresh(db: Session, rt_raw: str, subject_hint: Optional[s
     
     rec.revoked = True
     db.commit()
-    return mint_token_pair(db, rec.subject)
+
+    from models import UserProfile
+    profile = db.query(UserProfile).filter_by(email=rec.subject).one_or_none()
+    user_id = profile.user_id.strip() if (profile and profile.user_id) else None
+
+    return mint_token_pair(db, rec.subject, user_id=user_id)
 
 def revoke_refresh_by_raw(db: Session, rt_raw: Optional[str]):
     if not rt_raw: return

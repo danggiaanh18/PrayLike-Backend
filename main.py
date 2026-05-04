@@ -20,8 +20,8 @@ from routers.posts import router as posts_router
 from routers.ai import router as ai_router
 
 DEFAULT_ALLOWED_ORIGINS = [
-    "http://163.18.26.142:3000",
-    "http://163.18.26.142",   # ← THÊM
+    "https://pray.yalinelena.church:3000",
+    "https://pray.yalinelena.church",   # ← THÊM
     "http://localhost:3000",
     "http://localhost:8000",        # ← THÊM
 ]

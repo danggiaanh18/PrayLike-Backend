@@ -819,11 +819,15 @@ async def _handle_oauth_callback(provider: str, request: Request):
         db = SessionLocal()
         first_login = False
         try:
-            access_token, refresh_token = mint_token_pair(db, str(subject))
             login_email = _email_from_user_payload(userinfo)
             if login_email is None and isinstance(subject, str):
                 login_email = _normalize_email(subject)
             first_login = _resolve_first_login(db, login_email)
+            oauth_profile = db.query(UserProfile).filter(
+                UserProfile.email == login_email
+            ).one_or_none() if login_email else None
+            oauth_user_id = oauth_profile.user_id.strip() if (oauth_profile and oauth_profile.user_id) else None
+            access_token, refresh_token = mint_token_pair(db, str(subject), user_id=oauth_user_id)
         finally:
             db.close()
 
@@ -1106,11 +1110,11 @@ async def verify_otp(body: OTPVerifyBody, request: Request):
     first_login = False
     user_id = None
     try:
-        access_token, refresh_token = mint_token_pair(db, email)
         first_login = _resolve_first_login(db, email)
         profile = db.query(UserProfile).filter(UserProfile.email == email).one_or_none()
         if profile and profile.user_id:
             user_id = profile.user_id.strip()
+        access_token, refresh_token = mint_token_pair(db, email, user_id=user_id)
     finally:
         db.close()
 
